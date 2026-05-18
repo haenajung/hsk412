@@ -1,0 +1,57 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Phase 3: Primitives
+    function isValidId(id) { 
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); 
+    }
+    function isSignedIn() { 
+      return request.auth != null; 
+    }
+    function isOwner(userId) { 
+      return isSignedIn() && request.auth.uid == userId; 
+    }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+
+    // Phase 4: Entity Validation
+    function isValidSheet(data) {
+      return data.keys().hasAll(['userId', 'title', 'wordLimit', 'words', 'createdAt']) &&
+             data.keys().size() == 5 &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.title is string && data.title.size() <= 100 &&
+             data.wordLimit is number &&
+             data.words is list && data.words.size() <= 100 &&
+             data.createdAt == request.time;
+    }
+
+    function isValidStats(data) {
+      return data.keys().hasAll(['userId', 'dailyGoal', 'completedToday', 'updatedAt']) &&
+             data.keys().size() == 4 &&
+             data.userId is string && data.userId == request.auth.uid &&
+             data.dailyGoal is number &&
+             data.completedToday is number &&
+             data.updatedAt == request.time;
+    }
+
+    // Match blocks
+    match /sheets/{sheetId} {
+      allow create: if isSignedIn() && isValidSheet(incoming()) && isOwner(incoming().userId) && isValidId(sheetId);
+      allow get: if isOwner(existing().userId);
+      allow list: if isSignedIn() && resource.data.userId == request.auth.uid;
+      allow delete: if isOwner(existing().userId);
+    }
+
+    match /stats/{userId} {
+      allow get: if isOwner(userId);
+      allow create: if isSignedIn() && isValidStats(incoming()) && isOwner(userId);
+      allow update: if isOwner(userId) && isValidStats(incoming()) && 
+                    incoming().userId == existing().userId;
+    }
+  }
+}

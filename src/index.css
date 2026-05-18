@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-surface: #f8f9fa;
+  --color-surface-dim: #d9dadb;
+  --color-surface-bright: #f8f9fa;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f3f4f5;
+  --color-surface-container: #edeeef;
+  --color-surface-container-high: #e7e8e9;
+  --color-surface-container-highest: #e1e3e4;
+  
+  --color-on-surface: #191c1d;
+  --color-on-surface-variant: #43474e;
+  
+  --color-primary: #002045;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #1a365d;
+  --color-on-primary-container: #86a0cd;
+  
+  --color-secondary: #0a6c44;
+  --color-on-secondary: #ffffff;
+  
+  --color-outline: #74777f;
+  --color-outline-variant: #c4c6cf;
+}
+
+@layer base {
+  body {
+    @apply bg-surface text-on-surface font-sans;
+  }
+}
+
+@layer components {
+  .study-cell {
+    @apply border-on-surface border-[0.5px] h-[120px] flex flex-col relative bg-white;
+  }
+  
+  .cell-top {
+    @apply h-[35%] border-b-[0.5px] border-on-surface flex items-center justify-center italic text-sm text-on-surface-variant;
+  }
+  
+  .cell-bottom {
+    @apply h-[65%] flex items-center justify-center text-4xl font-medium;
+  }
+}

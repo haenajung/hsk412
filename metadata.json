@@ -1,0 +1,8 @@
+{
+  "name": "암기 시트 (Study Sheet)",
+  "description": "A professional HSK vocabulary practice and memorization sheet generator.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

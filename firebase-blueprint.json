@@ -1,0 +1,53 @@
+{
+  "entities": {
+    "Word": {
+      "title": "Word",
+      "description": "A single vocabulary word with character and pinyin.",
+      "type": "object",
+      "properties": {
+        "id": { "type": "number" },
+        "char": { "type": "string" },
+        "pinyin": { "type": "string" }
+      },
+      "required": ["id", "char", "pinyin"]
+    },
+    "Sheet": {
+      "title": "Vocabulary Sheet",
+      "description": "A generated vocabulary sheet.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "title": { "type": "string" },
+        "wordLimit": { "type": "number" },
+        "words": {
+          "type": "array",
+          "items": { "$ref": "Word" }
+        },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "title", "wordLimit", "words", "createdAt"]
+    },
+    "UserStats": {
+      "title": "User Statistics",
+      "description": "Study progress and goals.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string" },
+        "dailyGoal": { "type": "number" },
+        "completedToday": { "type": "number" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["userId", "dailyGoal", "completedToday", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/sheets/{sheetId}": {
+      "schema": "Sheet",
+      "description": "Collection of vocabulary sheets."
+    },
+    "/stats/{userId}": {
+      "schema": "UserStats",
+      "description": "Per-user study statistics."
+    }
+  }
+}
